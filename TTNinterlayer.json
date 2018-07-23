@@ -1,0 +1,116 @@
+[
+    {
+        "id": "4544a0b0.052e5",
+        "type": "debug",
+        "z": "926b8d8d.e66d9",
+        "name": "",
+        "active": true,
+        "console": "false",
+        "complete": "payload",
+        "x": 777,
+        "y": 214,
+        "wires": []
+    },
+    {
+        "id": "c0b80738.da8f78",
+        "type": "debug",
+        "z": "926b8d8d.e66d9",
+        "name": "",
+        "active": true,
+        "console": "false",
+        "complete": "true",
+        "x": 754.5,
+        "y": 298.20001220703125,
+        "wires": []
+    },
+    {
+        "id": "882c24be.4bdff8",
+        "type": "function",
+        "z": "926b8d8d.e66d9",
+        "name": "data",
+        "func": "//msg2 - Decrypt to Text\n//var msg2 = { payload: msg.payload.length };\n//msg2.payload = JSON.parse(msg.payload);\n//msg2.payload = new Buffer(msg2.payload.payload_raw, 'base64').toString('ascii');\n//return msg2;\n//var outputMsgs = [];\n//var words = msg.payload.split(\" \");\n//for (var w in words) {\n//    outputMsgs.push({payload:words[w]});\n//}\n\n//return [ outputMsgs ];\n//var payload = new Buffer(msg.payload);\n//return{\n\n// msg.payload\n\n// };\n\nvar msg2 = { payload: {deviceID: msg.payload.dev_id, \n             battery: msg.payload.payload_fields.battery,\n             distance: msg.payload.payload_fields.distance,\n             key: \"DK\",\n\t\t\t latitude: msg.payload.metadata.gateways[0].latitude,                        \n\t\t\t longitude: msg.payload.metadata.gateways[0].longitude,\n\t\t\t name: \"Denmark\"\n            }};\nreturn msg2;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 611,
+        "y": 300,
+        "wires": [
+            [
+                "c0b80738.da8f78",
+                "62976a5b.5074c4"
+            ]
+        ]
+    },
+    {
+        "id": "ab77535f.f53558",
+        "type": "json",
+        "z": "926b8d8d.e66d9",
+        "name": "",
+        "x": 454.5,
+        "y": 296.5,
+        "wires": [
+            [
+                "882c24be.4bdff8",
+                "4544a0b0.052e5"
+            ]
+        ]
+    },
+    {
+        "id": "62976a5b.5074c4",
+        "type": "influxdb out",
+        "z": "926b8d8d.e66d9",
+        "influxdb": "887544dd.0cfe68",
+        "name": "",
+        "measurement": "ttndev",
+        "precision": "",
+        "retentionPolicy": "",
+        "x": 769,
+        "y": 392,
+        "wires": []
+    },
+    {
+        "id": "c8a26221.6d5b5",
+        "type": "mqtt in",
+        "z": "926b8d8d.e66d9",
+        "name": "",
+        "topic": "+/devices/+/up",
+        "qos": "0",
+        "broker": "db4a1c22.95eec",
+        "x": 262,
+        "y": 296,
+        "wires": [
+            [
+                "ab77535f.f53558"
+            ]
+        ]
+    },
+    {
+        "id": "887544dd.0cfe68",
+        "type": "influxdb",
+        "z": "",
+        "hostname": "127.0.0.1",
+        "port": "8086",
+        "protocol": "http",
+        "database": "ttndb",
+        "name": "ttn",
+        "usetls": false,
+        "tls": ""
+    },
+    {
+        "id": "db4a1c22.95eec",
+        "type": "mqtt-broker",
+        "z": "",
+        "broker": "eu.thethings.network",
+        "port": "1883",
+        "clientid": "",
+        "usetls": false,
+        "compatmode": true,
+        "keepalive": "60",
+        "cleansession": true,
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": "",
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": ""
+    }
+]
